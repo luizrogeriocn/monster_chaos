@@ -9,7 +9,6 @@ public class WallSetup : MonoBehaviour
     public GameObject wallDown;
     public GameObject wallTop;
 
-    // Start is called before the first frame update
     void Start()
     {
         float wallThickness = 0.5f;
@@ -32,9 +31,4 @@ public class WallSetup : MonoBehaviour
         wallDown.transform.position = wallDownPosition;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

@@ -1,16 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
     private float speed = 10.0f;
     private Rigidbody2D rb;
     private GameController gameController;
-    private Vector3 initialAcceleration;
     private Vector3 currentAcceleration;
-    private float smooth = 0.01f;
     private bool isMobile;
 
     // Start is called before the first frame update
@@ -19,7 +16,6 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         gameController = GameObject.Find("GameController").GetComponent<GameController>();
 
-        initialAcceleration = Input.acceleration;
         currentAcceleration = Vector3.zero;
         isMobile = SystemInfo.supportsAccelerometer;
     }
@@ -27,14 +23,9 @@ public class PlayerController : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.tag == "Enemy")
-        {
-            SceneManager.LoadScene("MainMenu");
-        }
+            gameController.PlayerDied();
         if (collision.gameObject.tag == "Food")
-        {
-            gameController.SpawnFood();
-            gameController.SpawnEnemy();
-        }
+            gameController.PlayerGotFood();
     }
 
     // Update is called once per frame
@@ -45,18 +36,11 @@ public class PlayerController : MonoBehaviour
         
         if (isMobile)
         {
-             if (Input.touchCount > 0)
-            {
-                initialAcceleration = Input.acceleration;
-                currentAcceleration = Vector3.zero;
-            }
-
-            currentAcceleration = Vector3.Lerp(currentAcceleration,
-                Input.acceleration - initialAcceleration, Time.deltaTime / smooth);
+            currentAcceleration.x = Input.acceleration.x;
+            currentAcceleration.y = Input.acceleration.y;
 
             moveHorizontal = Mathf.Clamp(currentAcceleration.x, -1, 1);
             moveVertical = Mathf.Clamp(currentAcceleration.y, -1, 1);
-            Debug.Log(currentAcceleration);
         }
         else
         {
